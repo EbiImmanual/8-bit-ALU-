@@ -1,0 +1,54 @@
+module alu(input [3:0]in_1,in_2,opcode,output [3:0] out,flag);
+wire [4:0]temp;
+assign out=4'b0;
+assign flag=4'b0;
+genvar i;
+parameter parity_var=0,parity_var1;
+case (opcode)
+	4'b0000:		      //ADDITION
+	  begin
+	   
+	   assign temp=in_1+in_2;     //carry flag
+	   assign flag[0]=temp[4];    
+	   assign out=temp[3:0];      //sum
+	   
+	   if(temp==0)		      //zero flag
+	   assign flag[2]=1;          
+	   
+	   for(i=0;i<=3;i=i+1)	      //parity flag
+	   begin
+	   if(out[i]==1)
+	   parity_var = parity_var+1;
+	   end
+	   if(parity_var%2==0)
+ 	   assign flag[1]=1;   
+       
+	  end 
+
+	4'b0001:
+	  begin
+
+	   assign out=in_1-in_2;     //difference
+	   if(in_1<in_2)
+	   assign flag[3]=1;         //sign flag
+	   if(out==0)
+	   assign flag[2]=1;         //zero flag
+	   
+	   for(i=0;i<=3;i=i+1)	      //parity flag
+	   begin
+	   if(out[i]==1)
+	   assign parity_var1=parity_var+1;
+	   end
+	   if(parity_var1%2==0)
+ 	   assign flag[1]=1;
+
+	   assign temp=in_1-in_2;     //carry flag
+	   assign flag[0]=temp[4];    
+	 
+	  end
+endcase
+	  endmodule
+	/*4'b0010:		      //NAND
+	  begin
+
+	   assign out=~(in_1&in_2);	*/   
